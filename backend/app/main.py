@@ -1,12 +1,11 @@
-import os
-from fastapi import FastAPI
-from sqlalchemy import create_engine, text
+from fastapi import Depends, FastAPI
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+from app.db.session import get_db
 
 app = FastAPI(title="MDirector Campaigns")
-engine = create_engine(os.environ["DATABASE_URL"])
 
 @app.get("/health")
-def health():
-    with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
+def health(db: Session = Depends(get_db)):
+    db.execute(text("SELECT 1"))
     return {"status": "ok", "db": "ok"}
