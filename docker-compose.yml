@@ -20,5 +20,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  worker:
+    build: ./backend
+    env_file: .env
+    command: procrastinate --app=app.jobs.queue.job_app worker
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
 volumes:
   pgdata:
